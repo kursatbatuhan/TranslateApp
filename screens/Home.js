@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     iconContainer: {
         paddingHorizontal: 10,
         justifyContent: 'center',
-        alignItems: 'center',asd
+        alignItems: 'center',
 
     },
     resultContainer: {
