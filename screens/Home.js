@@ -2,13 +2,15 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Octicons ,Ionicons } from '@expo/vector-icons';
+import { Octicons, Ionicons, AntDesign, Feather, SimpleLineIcons } from '@expo/vector-icons';
+
 import { useState } from 'react';
 
 
 function HomeScreen() {
 
-    
+    const [resultText, setResultText] = useState("");
+    const [enteredText, setEnteredText] = useState("");
 
     return (
         <View style={styles.container}>
@@ -17,15 +19,60 @@ function HomeScreen() {
                     multiline
                     placeholder='Type or paste here to translate'
                     style={styles.inputText}
-                    onChangeText={(text) => console.log(text)}
+                    onChangeText={(text) => setEnteredText(text)}
                 />
-                <TouchableOpacity style = {styles.iconContainer}>
-                <Ionicons name="arrow-forward-circle-sharp" size={48} color="#102b46" />
+                <TouchableOpacity
+                    style={styles.iconContainer}
+                    disabled={enteredText === ""}
+                >
+                    <Ionicons
+                        name="arrow-forward-circle-sharp"
+                        size={30}
+                        color={enteredText !== "" ? color = '#102b46' : color = '#acacac'}
+                    />
                 </TouchableOpacity>
+
             </View>
 
-            <View styles = {styles.resultContainer}>
-                <Text style = {styles.resultText}>Some Translation Words</Text>
+            <View style={styles.buttonsContainer}>
+                <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
+                    <Feather name="volume-2" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.soundButtonsContainer}>
+                    <Feather name="camera" size={24} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.soundButtonsContainer}>
+                    <Feather name="folder" size={24} color="black" />
+                </TouchableOpacity>
+
+
+            </View>
+
+
+            <View style={styles.resultContainer}>
+                <Text style={styles.resultText}>{resultText}</Text>
+
+
+            </View>
+            <View style={styles.buttonsContainer}>
+                <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
+                    <Feather name="volume-2" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.soundButtonsContainer}>
+                    <Feather name="bookmark" size={24} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    disabled={resultText === ""}
+                    style={styles.soundButtonsContainer}
+                >
+                    <Ionicons name="copy-outline" size={24} color={resultText !== "" ? color = 'black' : color = '#acacac'}
+                    />
+                </TouchableOpacity>
+
+
+            </View>
+            <View style={styles.historyContainer}>
+
             </View>
         </View>
     );
@@ -36,6 +83,7 @@ const Stack = createStackNavigator();
 
 
 export default function Home(props) {
+
 
 
     return (
@@ -78,7 +126,7 @@ export default function Home(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        
+        backgroundColor: '#fff'
     },
     language: {
 
@@ -99,17 +147,16 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         flexDirection: 'row',
-        borderBottomColor: '#fff',
-        borderBottomWidth: 1,
+
         backgroundColor: '#fff'
     },
     inputText: {
-        flex : 1,
+        flex: 1,
         marginTop: 10,
         paddingHorizontal: 20,
         paddingVertical: 15,
         letterSpacing: 0.3,
-        height: 100,
+        height: 150,
         color: '#202124',
         fontSize: 18,
         backgroundColor: '#fff'
@@ -121,9 +168,34 @@ const styles = StyleSheet.create({
 
     },
     resultContainer: {
-
+        
+        flexDirection: 'row',
+        height: 150,
+        paddingVertical: 15,
+        backgroundColor: '#fff'
     },
     resultText: {
+        letterSpacing: 0.3,
+        color: '#202124',
+        flex: 1,
+        marginHorizontal: 20,
+        fontSize: 18,
+    },
+    buttonsContainer: {
+        borderBottomColor: '#f2f1f6',
+        borderBottomWidth: 1,
+        
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+    },
+    soundButtonsContainer: {
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+
+
+    },
+
+    historyContainer: {
 
     }
 });
