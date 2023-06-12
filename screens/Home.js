@@ -1,16 +1,40 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, TouchableOpacity, View, Keyboard } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { Octicons, Ionicons, AntDesign, Feather, SimpleLineIcons } from '@expo/vector-icons';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 function HomeScreen() {
 
-    const [resultText, setResultText] = useState("");
+    const [resultText, setResultText] = useState("asdf");
     const [enteredText, setEnteredText] = useState("");
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            keyboardDidShow
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            keyboardDidHide
+        );
+
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, []);
+
+    const keyboardDidShow = () => {
+        setKeyboardVisible(true);
+    };
+
+    const keyboardDidHide = () => {
+        setKeyboardVisible(false);
+    };
 
     return (
         <View style={styles.container}>
@@ -34,57 +58,62 @@ function HomeScreen() {
 
             </View>
 
-            <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
-                    <Feather name="volume-2" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.soundButtonsContainer}>
-                    <Feather name="camera" size={24} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.soundButtonsContainer}>
-                    <Feather name="folder" size={24} color="black" />
-                </TouchableOpacity>
+            {isKeyboardVisible && (
+                <View style={styles.buttonsContainer} >
+                    <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
+                        <Feather name="volume-2" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
+                    </TouchableOpacity>
 
+                    <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
+                        <Feather name="book-open" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
+                        <Feather name="share" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
+                        <Feather name="copy" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
+                    </TouchableOpacity>
+                </View>
 
-            </View>
-
+            )}
 
             <View style={styles.resultContainer}>
-                <Text style={styles.resultText}>{resultText}</Text>
-
+                <TouchableOpacity onPress={Keyboard.dismiss} style={{ flex: 1, backgroundColor: "red" }}>
+                    <Text style={styles.resultText}>{resultText}</Text>
+                </TouchableOpacity>
 
             </View>
-            <View style={styles.buttonsContainer}>
-                <TouchableOpacity style={styles.soundButtonsContainer} disabled={enteredText === ""}>
-                    <Feather name="volume-2" size={24} color={enteredText !== "" ? color = '#102b46' : color = '#acacac'} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.soundButtonsContainer}>
-                    <Feather name="bookmark" size={24} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    disabled={resultText === ""}
-                    style={styles.soundButtonsContainer}
-                >
-                    <Ionicons name="copy-outline" size={24} color={resultText !== "" ? color = 'black' : color = '#acacac'}
-                    />
-                </TouchableOpacity>
 
 
-            </View>
             <View style={styles.historyContainer}>
+                <Text>History Area
 
+                </Text>
             </View>
+        </View>
+    );
+}
+
+function LanguageSelect({ navigation, route }) {
+    const params = route.params || {};
+    const { title } = route.params;
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: title
+        })
+    })
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>LanguageSelect</Text>
         </View>
     );
 }
 
 const Stack = createStackNavigator();
 
-
-
 export default function Home(props) {
-
-
+    const navigation = useNavigation();
 
     return (
 
@@ -92,7 +121,6 @@ export default function Home(props) {
             screenOptions={{
                 headerStyle: {
                     backgroundColor: '#102b46',
-
                 },
                 headerTintColor: '#fff',
             }}
@@ -107,17 +135,33 @@ export default function Home(props) {
                         </TouchableOpacity>
                     ),
                     headerLeft: (props) => (
-                        <TouchableOpacity style={styles.langOpacityLeft} >
+                        <TouchableOpacity
+                            style={styles.langOpacityLeft}
+                            onPress={() => navigation.navigate("Language", { title: 'Translate from' })}
+                        >
                             <Text style={styles.headerText}>English</Text>
                         </TouchableOpacity>
                     ),
                     headerRight: (props) => (
-                        <TouchableOpacity style={styles.langOpacityRight}>
+                        <TouchableOpacity
+                            style={styles.langOpacityRight}
+                            onPress={() => navigation.navigate("Language", { title: 'Translate to' })}
+                        >
                             <Text style={styles.headerText}>Turkish</Text>
                         </TouchableOpacity>
                     ),
                 }}
             />
+            <Stack.Group screenOptions={{
+                presentation: 'modal'
+            }} >
+                <Stack.Screen
+                    name='Language'
+                    component={LanguageSelect}
+                />
+            </Stack.Group>
+
+
         </Stack.Navigator>
 
     );
@@ -168,23 +212,23 @@ const styles = StyleSheet.create({
 
     },
     resultContainer: {
-        
+
         flexDirection: 'row',
         height: 150,
-        paddingVertical: 15,
+
         backgroundColor: '#fff'
     },
     resultText: {
         letterSpacing: 0.3,
         color: '#202124',
         flex: 1,
-        marginHorizontal: 20,
+        padding: 10,
         fontSize: 18,
     },
     buttonsContainer: {
         borderBottomColor: '#f2f1f6',
         borderBottomWidth: 1,
-        
+
         flexDirection: 'row',
         alignItems: 'flex-end'
     },
@@ -196,6 +240,7 @@ const styles = StyleSheet.create({
     },
 
     historyContainer: {
-
+        flex: 1,
+        padding: 10
     }
 });

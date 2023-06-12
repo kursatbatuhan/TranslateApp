@@ -18,36 +18,6 @@ SplashScreen.preventAutoHideAsync();
 
 
 const Tab = createMaterialBottomTabNavigator();
-/*const TabNavigator = () => {
-  return (
-    <Tab.Navigator screenOptions={{
-      headerShown: false,
-      
-    }}>
-      <Tab.Screen name="homescreen"
-        component={Home}
-        options={{
-          tabBarLabel: "Home",
-          tabBarIcon: (props) => <Feather name="home" size={props.size} color={props.color} />
-
-        }} />
-      <Tab.Screen name="savedscreen"
-        component={Saved}
-        options={{
-          tabBarLabel: "Saved",
-          tabBarIcon: (props) => <Feather name="star" size={props.size} color={props.color} />
-        }} />
-      <Tab.Screen name="settingsscreen"
-        component={Settings}
-        options={{
-          tabBarLabel: "Settings",
-          tabBarIcon: (props) => <Feather name="settings" size={props.size} color={props.color} />
-        }} />
-
-    </Tab.Navigator>
-  )
-}
-*/
 
 function Tabs(){
   return (
